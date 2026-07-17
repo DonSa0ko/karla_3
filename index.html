@@ -3,276 +3,219 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+
 <meta name="robots" content="noindex, nofollow">
-<title>Algo se está preparando… 💌</title>
+<title>Nuestro Camino ❤</title>
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;1,600&family=Quicksand:wght@400;600&display=swap" rel="stylesheet">
-<style>
-/* ============================================================
-   PÁGINA DE ESPERA — SOLO LA CUENTA REGRESIVA ⏳
-   Esta es la versión que se sube HOY. No contiene nada del
-   regalo: ni fechas, ni textos, ni fotos. Mañana se reemplaza
-   por la versión completa y el mismo QR mostrará todo.
-   ============================================================ */
-:root{--transicion:2.5s ease}
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Quicksand:wght@400;500;600&display=swap" rel="stylesheet">
 
-/* Colores según la hora (mismo sistema que la app completa) */
-body.manana   {--cielo-arriba:#8ecae6;--cielo-abajo:#ffe9c9;--titulo:#5c374c;--acento:#ff8fab;--estrellas:0}
-body.tarde    {--cielo-arriba:#4ea8de;--cielo-abajo:#bde0fe;--titulo:#2b4162;--acento:#ff6b9d;--estrellas:0}
-body.atardecer{--cielo-arriba:#5f4b8b;--cielo-abajo:#ff9e6d;--titulo:#fff1e6;--acento:#ff5d8f;--estrellas:0}
-body.noche    {--cielo-arriba:#0b132b;--cielo-abajo:#1c2541;--titulo:#e0e6f5;--acento:#c77dff;--estrellas:1}
-
-*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-body{
-  min-height:100vh;
-  min-height:100dvh; /* viewport dinámico: iPhone/Safari ajusta al ocultar barras */
-  font-family:'Quicksand',sans-serif;
-  background:linear-gradient(to bottom,var(--cielo-arriba),var(--cielo-abajo));
-  transition:background var(--transicion);
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  text-align:center;gap:22px;overflow:hidden;position:relative;
-  /* Safe areas del iPhone: respeta la Dynamic Island arriba y
-     deja espacio abajo para el obrerito + la barra de inicio */
-  padding:calc(24px + env(safe-area-inset-top, 0px))
-          calc(20px + env(safe-area-inset-right, 0px))
-          calc(96px + env(safe-area-inset-bottom, 0px))
-          calc(20px + env(safe-area-inset-left, 0px));
-}
-
-/* Estrellitas (solo de noche) */
-#estrellas{position:fixed;inset:0;opacity:var(--estrellas);transition:opacity var(--transicion);pointer-events:none}
-.estrella{position:absolute;width:3px;height:3px;border-radius:50%;background:#fff;animation:titilar 3s ease-in-out infinite}
-@keyframes titilar{0%,100%{opacity:.25;transform:scale(.8)}50%{opacity:1;transform:scale(1.25)}}
-
-.corazon{font-size:3.2rem;animation:latido 1.6s ease-in-out infinite;filter:drop-shadow(0 4px 12px rgba(0,0,0,.25))}
-@keyframes latido{0%,100%{transform:scale(1)}25%{transform:scale(1.25)}40%{transform:scale(1)}}
-
-h1{
-  font-family:'Cormorant Garamond',serif;font-weight:600;font-style:italic;
-  font-size:clamp(1.5rem,7vw,2.1rem);color:var(--titulo);line-height:1.25;
-  transition:color var(--transicion);text-shadow:0 2px 10px rgba(0,0,0,.2);
-}
-.sub{font-size:.9rem;color:var(--titulo);opacity:.85;transition:color var(--transicion)}
-
-#cuenta{display:flex;gap:12px}
-.caja{
-  background:rgba(255,255,255,.16);
-  -webkit-backdrop-filter:blur(8px); /* Safari/iPhone necesita el prefijo */
-  backdrop-filter:blur(8px);
-  border:1px solid rgba(255,255,255,.35);border-radius:16px;
-  padding:12px 10px;min-width:64px;box-shadow:0 8px 24px rgba(0,0,0,.15);
-}
-/* En pantallas angostas (iPhone mini/SE) las cajitas se compactan */
-@media (max-width:380px){
-  #cuenta{gap:8px}
-  .caja{min-width:56px;padding:10px 6px}
-  .valor{font-size:1.4rem}
-}
-.valor{font-size:1.7rem;font-weight:600;color:var(--titulo);font-variant-numeric:tabular-nums;transition:color var(--transicion)}
-.unidad{font-size:.62rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--titulo);opacity:.8;transition:color var(--transicion)}
-
-/* ============================================================
-   OBRERITO PIXEL ART 🔨 construyendo el regalo
-   Martilla sin parar y el corazón de bloques se arma pieza
-   por pieza en un loop de 10 segundos. Avanza hacia la derecha
-   a medida que se acerca el día del lanzamiento.
-   Nota: env(safe-area-inset-bottom) lo levanta sobre la barra
-   de inicio del iPhone para que nunca quede tapado.
-   ============================================================ */
-.constructor{
-  position:fixed;left:12px;
-  bottom:calc(14px + env(safe-area-inset-bottom, 0px));
-  width:190px;
-  pointer-events:none;
-  image-rendering:pixelated;shape-rendering:crispEdges;
-  transition:filter var(--transicion),left 1s linear;
-  filter:drop-shadow(0 3px 6px rgba(0,0,0,.2));
-}
-body.atardecer .constructor{filter:brightness(.85)}
-body.noche .constructor{filter:brightness(.6)}
-
-/* Brazo con martillo: sube... ¡y golpea! */
-.constructor .brazo{
-  transform-box:fill-box;transform-origin:0% 80%;
-  animation:martillar 1s ease-in-out infinite;
-}
-@keyframes martillar{
-  0%,55%,100%{transform:rotate(0deg)}
-  35%{transform:rotate(-65deg)}   /* levanta el martillo */
-  48%{transform:rotate(4deg)}     /* ¡golpe! */
-}
-/* Chispa amarilla justo cuando el martillo golpea */
-.constructor .chispa{opacity:0;animation:chispear 1s linear infinite}
-@keyframes chispear{
-  0%,47%{opacity:0}
-  48%,60%{opacity:1}
-  61%,100%{opacity:0}
-}
-/* El corazón se construye de abajo hacia arriba, y vuelve a empezar */
-.constructor .etapa1{animation:construir1 10s steps(1) infinite}
-.constructor .etapa2{animation:construir2 10s steps(1) infinite}
-.constructor .etapa3{animation:construir3 10s steps(1) infinite}
-.constructor .etapa4{animation:construir4 10s steps(1) infinite}
-@keyframes construir1{0%{opacity:0}12%,100%{opacity:1}}
-@keyframes construir2{0%,32%{opacity:0}33%,100%{opacity:1}}
-@keyframes construir3{0%,57%{opacity:0}58%,100%{opacity:1}}
-@keyframes construir4{0%,82%{opacity:0}83%,97%{opacity:1}100%{opacity:1}}
-</style>
+<link rel="stylesheet" href="css/estilos.css">
 </head>
 <body class="tarde">
 
-<div id="estrellas"></div>
+<div id="escenario" aria-hidden="true">
+  <div id="estrellas"></div>
+  <div class="fugaz"></div>
+  <div id="astro"></div>
 
-<div class="corazon">💛</div>
-<!-- ✏️ EDITA AQUÍ si quieres otro mensaje de espera -->
-<h1>Se está preparando<br>algo especial para ti…</h1>
+  <div class="nube n1"></div>
+  <div class="nube n2"></div>
+  <div class="nube n3"></div>
 
-<div id="cuenta">
-  <div class="caja"><div class="valor" id="c-dias">–</div><div class="unidad">días</div></div>
-  <div class="caja"><div class="valor" id="c-horas">–</div><div class="unidad">horas</div></div>
-  <div class="caja"><div class="valor" id="c-min">–</div><div class="unidad">min</div></div>
-  <div class="caja"><div class="valor" id="c-seg">–</div><div class="unidad">seg</div></div>
+  
+  <svg id="paisaje" viewBox="0 0 400 200" preserveAspectRatio="none">
+    
+    <path class="montana" d="M0,120 L60,55 L110,105 L170,40 L230,110 L290,60 L350,115 L400,75 L400,200 L0,200 Z"/>
+    
+    <g class="lejos">
+      <path d="M0,200 L0,150 Q50,135 100,148 Q160,160 220,145 Q300,132 400,150 L400,200 Z"/>
+      <polygon points="30,150 45,105 60,150"/>
+      <polygon points="90,152 105,110 120,152"/>
+      <polygon points="180,148 195,100 210,148"/>
+      <polygon points="270,142 285,98 300,142"/>
+      <polygon points="340,148 355,108 370,148"/>
+    </g>
+    
+    <g class="cerca">
+      <path d="M0,200 L0,172 Q80,158 160,170 Q260,182 400,168 L400,200 Z"/>
+      <polygon points="10,172 30,118 50,172"/>
+      <polygon points="130,174 152,122 174,174"/>
+      <polygon points="250,176 272,126 294,176"/>
+      <polygon points="350,172 372,120 394,172"/>
+    </g>
+  </svg>
+
+  
+  <div class="luciernaga" style="bottom:12%;left:15%;animation-delay:0s"></div>
+  <div class="luciernaga" style="bottom:18%;left:45%;animation-delay:2s"></div>
+  <div class="luciernaga" style="bottom:9%;left:70%;animation-delay:4s"></div>
+  <div class="luciernaga" style="bottom:22%;left:85%;animation-delay:1s"></div>
+  <div class="luciernaga" style="bottom:15%;left:30%;animation-delay:5s"></div>
 </div>
-<p class="sub">Vuelve cuando el contador llegue a cero 💛</p>
 
-<!-- ══════ OBRERITO PIXEL ART 🔨 construyendo tu regalo ══════ -->
-<svg class="constructor" viewBox="0 0 40 17" aria-hidden="true">
-  <!-- Suelo de pasto -->
-  <rect x="1" y="13" width="24" height="1" fill="#5a8f3c"/>
-  <rect x="1" y="14" width="24" height="1" fill="#46702f"/>
-
-  <!-- ═══ El obrerito ═══ -->
-  <!-- Casco amarillo -->
-  <rect x="6" y="1" width="4" height="1" fill="#ffd23f"/>
-  <rect x="5" y="2" width="6" height="1" fill="#ffd23f"/>
-  <rect x="5" y="3" width="7" height="1" fill="#e0b32c"/>
-  <!-- Carita -->
-  <rect x="6" y="4" width="4" height="2" fill="#ffc79c"/>
-  <rect x="8" y="4" width="1" height="1" fill="#2b2724"/>
-  <!-- Cuerpo: overol azul -->
-  <rect x="6" y="6" width="4" height="4" fill="#4a7fd4"/>
-  <rect x="7" y="6" width="2" height="1" fill="#3763a8"/>
-  <!-- Brazo con martillo (grupo animado: sube y golpea) -->
-  <g class="brazo">
-    <rect x="10" y="6" width="2" height="1" fill="#ffc79c"/>
-    <rect x="12" y="5" width="1" height="3" fill="#8a5a3a"/>
-    <rect x="12" y="3" width="2" height="2" fill="#9aa0a8"/>
-    <rect x="12" y="3" width="2" height="1" fill="#b8bec6"/>
+<svg id="luca" class="perro" viewBox="0 0 130 112" role="button" aria-label="Luca">
+  
+  <g class="plato">
+    <ellipse cx="119" cy="106" rx="11" ry="4" fill="#d4694f"/>
+    <ellipse cx="119" cy="104" rx="8" ry="2.6" fill="#7a4a2e"/>
   </g>
-  <!-- Piernas y botas -->
-  <rect x="6" y="10" width="1" height="2" fill="#2f3550"/>
-  <rect x="9" y="10" width="1" height="2" fill="#2f3550"/>
-  <rect x="5" y="12" width="2" height="1" fill="#6b4a2e"/>
-  <rect x="9" y="12" width="2" height="1" fill="#6b4a2e"/>
-
-  <!-- Chispa del martillazo ✨ -->
-  <g class="chispa">
-    <rect x="14" y="4" width="1" height="1" fill="#ffe066"/>
-    <rect x="14" y="2" width="1" height="1" fill="#fff3b0"/>
-    <rect x="14" y="6" width="1" height="1" fill="#fff3b0"/>
-    <rect x="13" y="3" width="1" height="1" fill="#fff3b0"/>
-    <rect x="15" y="5" width="1" height="1" fill="#ffe066"/>
-  </g>
-
-  <!-- ═══ El corazón de bloques 💛 (se construye de abajo hacia arriba) ═══ -->
-  <!-- Etapa 1: la base -->
-  <g class="etapa1">
-    <rect x="18" y="12" width="1" height="1" fill="#ffc93c"/>
-    <rect x="17" y="11" width="3" height="1" fill="#ffc93c"/>
-    <rect x="19" y="11" width="1" height="1" fill="#e0a324"/>
-  </g>
-  <!-- Etapa 2 -->
-  <g class="etapa2">
-    <rect x="16" y="10" width="5" height="1" fill="#ffc93c"/>
-    <rect x="20" y="10" width="1" height="1" fill="#e0a324"/>
-  </g>
-  <!-- Etapa 3: el cuerpo del corazón -->
-  <g class="etapa3">
-    <rect x="15" y="8" width="7" height="2" fill="#ffc93c"/>
-    <rect x="21" y="8" width="1" height="2" fill="#e0a324"/>
-    <rect x="16" y="8" width="1" height="1" fill="#ffe07a"/>
-  </g>
-  <!-- Etapa 4: las curvitas de arriba, ¡corazón completo! -->
-  <g class="etapa4">
-    <rect x="16" y="7" width="2" height="1" fill="#ffc93c"/>
-    <rect x="19" y="7" width="2" height="1" fill="#ffc93c"/>
-    <rect x="16" y="7" width="1" height="1" fill="#ffe07a"/>
+  <g class="accionable cuerpo">
+    
+    <g class="cola">
+      <path d="M34,52 Q18,36 26,20 Q30,34 40,42 Q34,30 42,22 Q42,38 48,46 Z" fill="#fdfbf6"/>
+      <path d="M28,26 Q30,34 36,40" fill="none" stroke="#e9e2d2" stroke-width="2" stroke-linecap="round"/>
+    </g>
+    
+    <rect class="pata p1" x="42" y="82" width="9" height="22" rx="4.5" fill="#f3eee1"/>
+    <rect class="pata p2" x="56" y="84" width="9" height="22" rx="4.5" fill="#fdfbf6"/>
+    <rect class="pata p1" x="74" y="84" width="9" height="22" rx="4.5" fill="#f3eee1"/>
+    <rect class="pata p2" x="86" y="82" width="9" height="22" rx="4.5" fill="#fdfbf6"/>
+    
+    <path d="M32,58 Q34,44 62,42 Q92,42 96,60
+             L96,84 Q92,90 87,84 Q83,92 77,85 Q72,93 66,85
+             Q60,93 54,85 Q48,92 43,84 Q38,90 34,83 Z" fill="#fdfbf6"/>
+    <path d="M40,58 Q42,72 41,82 M55,54 Q56,70 55,84 M70,54 Q71,70 70,84 M84,58 Q86,72 85,82"
+          fill="none" stroke="#ece5d4" stroke-width="2" stroke-linecap="round"/>
+    
+    <g>
+      <circle cx="99" cy="42" r="21" fill="#fdfbf6"/>
+      <path d="M84,34 Q76,44 79,62 Q86,58 90,48 Q88,40 86,34 Z" fill="#f0e9d8"/>
+      <path d="M82,42 Q82,52 82,58" fill="none" stroke="#ded5c0" stroke-width="1.6" stroke-linecap="round"/>
+      
+      <path d="M90,24 Q92,12 100,17 Q106,10 110,20 Q116,18 112,28 Z" fill="#f7f2e4"/>
+      <circle cx="101" cy="17" r="2.6" fill="#9bc4e2"/>
+      
+      <g class="ojo">
+        <circle class="ojo-abierto" cx="103" cy="40" r="4" fill="#2e2521"/>
+        <circle class="ojo-abierto" cx="104.5" cy="38.5" r="1.3" fill="#fff"/>
+        <path class="ojo-cerrado" d="M98,41 Q103,45 108,41" fill="none" stroke="#8a7d6e" stroke-width="2" stroke-linecap="round"/>
+      </g>
+      <path d="M97,34 Q102,32 107,34" fill="none" stroke="#efe8d6" stroke-width="3" stroke-linecap="round"/>
+      
+      <path d="M108,45 Q120,46 117,56 Q112,62 105,58 Q102,52 105,47 Z" fill="#f7f2e4"/>
+      <circle cx="115" cy="47" r="3.4" fill="#2e2521"/>
+      <path d="M110,53 Q113,56 116,53" fill="none" stroke="#8a7d6e" stroke-width="1.6" stroke-linecap="round"/>
+      <path d="M106,58 Q106,66 103,68 M111,59 Q112,66 110,69" fill="none" stroke="#efe8d6" stroke-width="2.4" stroke-linecap="round"/>
+      <path d="M113,57 Q114,62 111,62 Q109,61 110,57 Z" fill="#e88ba0"/>
+    </g>
   </g>
 </svg>
 
-<script>
-/* ✏️ FECHA DE LANZAMIENTO (año, mes-1, día, hora, minuto)
-   ⚠️ En JavaScript julio = 6 (los meses van de 0 a 11) */
-const FECHA_LANZAMIENTO = new Date(2026, 6, 18, 0, 0); // 18 de julio 2026, 00:00
+<svg id="kaika" class="perro" viewBox="0 0 130 112" role="button" aria-label="Kaika">
+  
+  <g class="plato">
+    <ellipse cx="119" cy="106" rx="11" ry="4" fill="#7d6bb5"/>
+    <ellipse cx="119" cy="104" rx="8" ry="2.6" fill="#7a4a2e"/>
+  </g>
+  <g class="accionable cuerpo">
+    
+    <g class="cola">
+      <path d="M34,52 Q18,36 26,20 Q30,34 40,42 Q34,30 42,22 Q42,38 48,46 Z" fill="#fdfbf6"/>
+      <path d="M28,26 Q30,34 36,40" fill="none" stroke="#e9e2d2" stroke-width="2" stroke-linecap="round"/>
+    </g>
+    
+    <rect class="pata p1" x="42" y="82" width="9" height="22" rx="4.5" fill="#f3eee1"/>
+    <rect class="pata p2" x="56" y="84" width="9" height="22" rx="4.5" fill="#fdfbf6"/>
+    <rect class="pata p1" x="74" y="84" width="9" height="22" rx="4.5" fill="#f3eee1"/>
+    <rect class="pata p2" x="86" y="82" width="9" height="22" rx="4.5" fill="#fdfbf6"/>
+    
+    <path d="M32,58 Q34,44 62,42 Q92,42 96,60
+             L96,84 Q92,90 87,84 Q83,92 77,85 Q72,93 66,85
+             Q60,93 54,85 Q48,92 43,84 Q38,90 34,83 Z" fill="#fdfbf6"/>
+    
+    <path d="M40,48 Q58,42 78,46 Q76,58 62,62 Q48,62 40,54 Z" fill="#2b2724"/>
+    <path d="M36,62 Q42,60 46,64 Q44,74 38,76 Q34,70 36,62 Z" fill="#2b2724"/>
+    <path d="M50,54 Q52,70 51,82 M68,54 Q70,70 69,84 M84,58 Q86,72 85,82"
+          fill="none" stroke="#ece5d4" stroke-width="2" stroke-linecap="round"/>
+    
+    <g>
+      <circle cx="99" cy="42" r="21" fill="#2b2724"/>
+      
+      <path d="M84,34 Q76,44 79,62 Q86,58 90,48 Q88,40 86,34 Z" fill="#1e1b19"/>
+      <path d="M82,42 Q82,52 82,58" fill="none" stroke="#454039" stroke-width="1.6" stroke-linecap="round"/>
+      
+      <path d="M90,24 Q92,12 100,17 Q106,10 110,20 Q116,18 112,28 Z" fill="#3a3531"/>
+      <path d="M98,15 L94,10 L96,16 L92,17 Z M104,15 L108,10 L106,16 L110,17 Z" fill="#f291b1"/>
+      <circle cx="101" cy="15" r="2.4" fill="#e56a94"/>
+      
+      <path d="M97,26 Q100,23 103,26 Q102,36 100,40 Q98,36 97,26 Z" fill="#fdfbf6"/>
+      
+      <g class="ojo">
+        <circle class="ojo-abierto" cx="103" cy="40" r="4.4" fill="#171310"/>
+        <circle class="ojo-abierto" cx="104.6" cy="38.4" r="1.5" fill="#fff"/>
+        <path class="ojo-cerrado" d="M98,41 Q103,45 108,41" fill="none" stroke="#8f8880" stroke-width="2" stroke-linecap="round"/>
+      </g>
+      
+      <path d="M108,45 Q120,46 117,56 Q112,62 105,58 Q102,52 105,47 Z" fill="#fdfbf6"/>
+      <circle cx="115" cy="47" r="3.4" fill="#171310"/>
+      <path d="M110,53 Q113,56 116,53" fill="none" stroke="#5a5248" stroke-width="1.6" stroke-linecap="round"/>
+      <path d="M106,58 Q106,66 103,68 M111,59 Q112,66 110,69" fill="none" stroke="#e6dfd0" stroke-width="2.4" stroke-linecap="round"/>
+      <path d="M113,57 Q114,62 111,62 Q109,61 110,57 Z" fill="#e88ba0"/>
+    </g>
+  </g>
+</svg>
 
-/* ✏️ FECHA DE INICIO: desde cuándo empieza a avanzar el obrerito.
-   Ponla en el día que entregas el QR. El obrerito parte en la
-   izquierda ese día y llega al borde derecho el día del lanzamiento. */
-const FECHA_INICIO = new Date(2026, 6, 12, 0, 0); // 12 de julio 2026
+<header>
+  
+  <h1>6 FOTOS & 6 PENSAMIENTOS</h1>
+  <p>¡Feliz tercer cumplemés amor mío!<span class="corazon-latiendo">❤</span></p>
+</header>
 
-/* ------------------------------------------------------------
-   EL OBRERITO AVANZA 🔨➡️
-   Su posición horizontal refleja cuánto falta: cada día que
-   pasa está un poco más a la derecha, construyendo el corazón
-   más cerca de la meta.
-   ------------------------------------------------------------ */
-const obrero = document.querySelector(".constructor");
+<main id="mapa">
+  <svg id="camino-svg" aria-hidden="true">
+    <path class="camino-borde" d=""/>
+    <path class="camino-centro" d=""/>
+  </svg>
+  
+</main>
 
-function moverObrero(){
-  const total = FECHA_LANZAMIENTO - FECHA_INICIO;
-  const avanzado = Date.now() - FECHA_INICIO;
-  // Progreso entre 0 (día de inicio) y 1 (día del lanzamiento)
-  const progreso = Math.min(1, Math.max(0, avanzado / total));
-  const margen = 12;
-  const recorrido = window.innerWidth - obrero.offsetWidth - margen * 2;
-  obrero.style.left = (margen + progreso * recorrido) + "px";
-}
-moverObrero();
-window.addEventListener("resize", moverObrero);
+<footer>
+  
+  <p class="firma">Con mucho amor: Benjamín Alosno Sáez Rojas, 18/7/2026</p>
+</footer>
 
-/* Fondo según la hora local */
-function aplicarHora(){
-  const h = new Date().getHours(), m = new Date().getMinutes();
-  let modo;
-  if (h >= 6 && h < 12) modo = "manana";
-  else if (h >= 12 && h < 18) modo = "tarde";
-  else if ((h === 20 && m === 0) || (h >= 18 && h < 20)) modo = "atardecer";
-  else modo = "noche";
-  document.body.className = modo;
-}
-aplicarHora();
-setInterval(aplicarHora, 60 * 1000);
+<div id="velo" role="dialog" aria-modal="true" aria-labelledby="modal-titulo">
+  <div id="modal">
+    <button class="cerrar" id="btn-cerrar" aria-label="Cerrar">✕</button>
+    <div class="foto-marco">
+      <img id="modal-foto" src="" alt="Recuerdo de nuestro camino">
+    </div>
+    <div class="cuerpo">
+      <span class="fecha" id="modal-fecha"></span>
+      <h2 id="modal-titulo"></h2>
+      <p class="texto" id="modal-texto"></p>
+    </div>
+    
+    <span class="corazon-flotante" style="left:12%;animation-delay:0s">💗</span>
+    <span class="corazon-flotante" style="left:50%;animation-delay:1.4s">💕</span>
+    <span class="corazon-flotante" style="left:82%;animation-delay:2.6s">💖</span>
+  </div>
+</div>
 
-/* Estrellitas de noche */
-const cont = document.getElementById("estrellas");
-for (let i = 0; i < 45; i++){
-  const e = document.createElement("div");
-  e.className = "estrella";
-  e.style.left = Math.random() * 100 + "%";
-  e.style.top  = Math.random() * 70 + "%";
-  e.style.animationDelay = (Math.random() * 3).toFixed(2) + "s";
-  cont.appendChild(e);
-}
+<div id="candado">
+  <div class="vista" id="vista-cuenta">
+    <div class="candado-corazon">💛</div>
+    <h2>Se está preparando<br>algo especial para ti…</h2>
+    <div id="cuenta">
+      <div class="caja"><div class="valor" id="c-dias">–</div><div class="unidad">días</div></div>
+      <div class="caja"><div class="valor" id="c-horas">–</div><div class="unidad">horas</div></div>
+      <div class="caja"><div class="valor" id="c-min">–</div><div class="unidad">min</div></div>
+      <div class="caja"><div class="valor" id="c-seg">–</div><div class="unidad">seg</div></div>
+    </div>
+    <p class="candado-sub">Vuelve cuando el contador llegue a cero 💛</p>
+    <button id="link-llave" type="button">Tengo la llave 🔑</button>
+  </div>
+  <div class="vista" id="vista-clave" hidden>
+    <div class="candado-corazon">🔑</div>
+    <h2>Este regalo tiene llave…<br>pídesela a Benja 💛</h2>
+    <input type="password" id="clave" placeholder="Pega aquí la llave" autocomplete="off" maxlength="64">
+    <button id="btn-entrar" type="button">Entrar 💛</button>
+    <p class="candado-error" id="error-clave" hidden></p>
+  </div>
+</div>
 
-/* Cuenta regresiva. Al llegar a cero, recarga la página:
-   si ya subiste la versión completa, aparecerá el regalo 🎁 */
-function tic(){
-  const falta = FECHA_LANZAMIENTO - new Date();
-  if (falta <= 0){
-    document.querySelector("h1").innerHTML = "¡Es hoy! 🎉";
-    setTimeout(() => location.reload(), 2000);
-    return;
-  }
-  const s = Math.floor(falta / 1000);
-  document.getElementById("c-dias").textContent  = Math.floor(s / 86400);
-  document.getElementById("c-horas").textContent = String(Math.floor(s % 86400 / 3600)).padStart(2,"0");
-  document.getElementById("c-min").textContent   = String(Math.floor(s % 3600 / 60)).padStart(2,"0");
-  document.getElementById("c-seg").textContent   = String(s % 60).padStart(2,"0");
-  moverObrero(); // el obrerito avanza un poquitito cada segundo
-}
-tic();
-setInterval(tic, 1000);
-</script>
+<script src="js/app.js"></script>
 </body>
 </html>
