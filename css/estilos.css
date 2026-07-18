@@ -348,11 +348,6 @@ header,footer,#mapa{pointer-events:none}
 }
 #velo.abierto #modal{transform:translateY(0) scale(1)}
 
-#modal::after{
-  content:"";position:absolute;inset:10px;border-radius:18px;
-  border:1px solid rgba(199,125,255,.35);pointer-events:none;
-}
-
 #modal .foto-marco{
   padding:16px 16px 0;
 }
